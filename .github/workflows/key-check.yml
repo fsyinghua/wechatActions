@@ -1,0 +1,39 @@
+name: Key Check Workflow
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  key-check:
+    runs-on: ubuntu-latest
+    name: Key Check
+    steps:
+      - name: 检查WECHAT_WEBHOOK_URL密钥
+        run: |
+          echo "=== 检查WECHAT_WEBHOOK_URL密钥 ==="
+          echo "WECHAT_WEBHOOK_URL存在: ${{ secrets.WECHAT_WEBHOOK_URL != '' }}"
+          echo "WECHAT_WEBHOOK_URL长度: ${{ length(secrets.WECHAT_WEBHOOK_URL) }}"
+          echo "WECHAT_WEBHOOK_URL类型: ${{ type(secrets.WECHAT_WEBHOOK_URL) }}"
+          
+      - name: 检查WCOM_WEBHOOK_URL密钥
+        run: |
+          echo "=== 检查WCOM_WEBHOOK_URL密钥 ==="
+          echo "WCOM_WEBHOOK_URL存在: ${{ secrets.WCOM_WEBHOOK_URL != '' }}"
+          echo "WCOM_WEBHOOK_URL长度: ${{ length(secrets.WCOM_WEBHOOK_URL) }}"
+          echo "WCOM_WEBHOOK_URL类型: ${{ type(secrets.WCOM_WEBHOOK_URL) }}"
+          
+      - name: 显示环境变量
+        env:
+          WECHAT_WEBHOOK_URL: ${{ secrets.WECHAT_WEBHOOK_URL }}
+          WCOM_WEBHOOK_URL: ${{ secrets.WCOM_WEBHOOK_URL }}
+        run: |
+          echo "=== 显示环境变量 ==="
+          echo "WECHAT_WEBHOOK_URL环境变量存在: ${{ env.WECHAT_WEBHOOK_URL != '' }}"
+          echo "WCOM_WEBHOOK_URL环境变量存在: ${{ env.WCOM_WEBHOOK_URL != '' }}"
+          
+          # 使用set命令显示所有环境变量，过滤出WECHAT相关的
+          echo "\n=== WECHAT相关环境变量 ==="
+          set | grep -i wechat
+          set | grep -i wcom
