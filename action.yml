@@ -12,8 +12,8 @@ inputs:
     default: 'push,pull_request,issues,release'
 
 runs:
-  using: 'node20'
-  main: 'index.js'
+  using: 'docker'
+  image: 'Dockerfile'
 
 branding:
   icon: 'bell'
