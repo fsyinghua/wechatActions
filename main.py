@@ -292,9 +292,21 @@ def main():
     try:
         # 1. 获取输入参数
         print(f'::debug::[{session_id}] 步骤1: 获取输入参数')
-        webhook_url = get_input('wechat_webhook_url', required=True)
+        webhook_url = get_input('wechat_webhook_url', required=False)
         event_types = get_input('event_types', default='push,pull_request,issues,release').split(',')
-        print(f'::debug::[{session_id}] 输入参数获取完成: webhook_url={webhook_url[:50]}..., event_types={event_types}')
+        print(f'::debug::[{session_id}] 输入参数获取完成: webhook_url={webhook_url[:50] if webhook_url else "None"}..., event_types={event_types}')
+        
+        # 如果webhook_url为空，尝试从环境变量获取
+        if not webhook_url:
+            print(f'::debug::[{session_id}] 尝试从环境变量获取webhook_url')
+            webhook_url = os.getenv('WECHAT_WEBHOOK_URL') or os.getenv('WCOM_WEBHOOK_URL')
+            print(f'::debug::[{session_id}] 从环境变量获取到webhook_url: {webhook_url[:50] if webhook_url else "None"}...')
+        
+        # 最终检查webhook_url是否存在
+        if not webhook_url:
+            print(f'::error::[{session_id}] 未找到有效的webhook_url')
+            print(f'::error::[{session_id}] 请通过GitHub Action输入或环境变量提供WECHAT_WEBHOOK_URL或WCOM_WEBHOOK_URL')
+            sys.exit(1)
         
         # 2. 获取GitHub事件信息
         print(f'::debug::[{session_id}] 步骤2: 获取GitHub事件信息')

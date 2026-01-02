@@ -1,0 +1,75 @@
+name: Simple Debug Workflow
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  simple-debug:
+    runs-on: ubuntu-latest
+    name: Simple Debug
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: 显示环境信息
+        run: |
+          echo "=== 显示环境信息 ==="
+          echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
+          echo "GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME"
+          echo "GITHUB_ACTOR: $GITHUB_ACTOR"
+          echo "GITHUB_SHA: $GITHUB_SHA"
+
+      - name: 检查密钥是否存在
+        run: |
+          echo "=== 检查密钥是否存在 ==="
+          echo "WECHAT_WEBHOOK_URL 存在: ${{ secrets.WECHAT_WEBHOOK_URL != '' }}"
+          echo "WCOM_WEBHOOK_URL 存在: ${{ secrets.WCOM_WEBHOOK_URL != '' }}"
+          
+          # 显示密钥长度（不显示实际值）
+          if [ "${{ secrets.WECHAT_WEBHOOK_URL }}" != "" ]; then
+              echo "WECHAT_WEBHOOK_URL 长度: ${{ length(secrets.WECHAT_WEBHOOK_URL) }}"
+          fi
+          
+          if [ "${{ secrets.WCOM_WEBHOOK_URL }}" != "" ]; then
+              echo "WCOM_WEBHOOK_URL 长度: ${{ length(secrets.WCOM_WEBHOOK_URL) }}"
+          fi
+
+      - name: 设置环境变量
+        env:
+          # 设置环境变量，使用空字符串作为默认值
+          WECHAT_WEBHOOK_URL: ${{ secrets.WECHAT_WEBHOOK_URL || '' }}
+          WCOM_WEBHOOK_URL: ${{ secrets.WCOM_WEBHOOK_URL || '' }}
+        run: |
+          echo "=== 设置环境变量 ==="
+          echo "WECHAT_WEBHOOK_URL 环境变量: ${WECHAT_WEBHOOK_URL:0:30}..."
+          echo "WCOM_WEBHOOK_URL 环境变量: ${WCOM_WEBHOOK_URL:0:30}..."
+
+      - name: 测试简单脚本
+        run: |
+          echo "=== 测试简单脚本 ==="
+          # 创建一个简单的Python脚本，只输出环境变量
+          cat > test_simple.py << 'EOF'
+import os
+
+print("Python脚本测试开始")
+print(f"INPUT_WECHAT_WEBHOOK_URL 环境变量: {os.getenv('INPUT_WECHAT_WEBHOOK_URL', '不存在')}")
+print("Python脚本测试结束")
+EOF
+          
+          # 运行脚本
+          python3 test_simple.py
+
+      - name: 输出最终结果
+        run: |
+          echo "=== 最终结果 ==="
+          if [ "${{ secrets.WECHAT_WEBHOOK_URL || secrets.WCOM_WEBHOOK_URL }}" != "" ]; then
+              echo "✅ 找到有效的Webhook URL"
+              echo "   使用的密钥: ${{ secrets.WECHAT_WEBHOOK_URL != '' && 'WECHAT_WEBHOOK_URL' || 'WCOM_WEBHOOK_URL' }}"
+          else
+              echo "❌ 未找到有效的Webhook URL"
+              echo "   请检查 WECHAT_WEBHOOK_URL 或 WCOM_WEBHOOK_URL 密钥是否已设置"
+          fi
