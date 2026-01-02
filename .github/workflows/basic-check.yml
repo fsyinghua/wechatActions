@@ -1,0 +1,34 @@
+name: Basic Check Workflow
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  basic-check:
+    runs-on: ubuntu-latest
+    name: Basic Check
+    steps:
+      - name: 检查WECHAT_WEBHOOK_URL
+        run: |
+          echo "=== 检查WECHAT_WEBHOOK_URL ==="
+          echo "WECHAT_WEBHOOK_URL 是否存在: ${{ secrets.WECHAT_WEBHOOK_URL != '' }}"
+          echo "WECHAT_WEBHOOK_URL 长度: ${{ length(secrets.WECHAT_WEBHOOK_URL) }}"
+          echo "WECHAT_WEBHOOK_URL 类型: ${{ type(secrets.WECHAT_WEBHOOK_URL) }}"
+          
+      - name: 检查WCOM_WEBHOOK_URL
+        run: |
+          echo "=== 检查WCOM_WEBHOOK_URL ==="
+          echo "WCOM_WEBHOOK_URL 是否存在: ${{ secrets.WCOM_WEBHOOK_URL != '' }}"
+          echo "WCOM_WEBHOOK_URL 长度: ${{ length(secrets.WCOM_WEBHOOK_URL) }}"
+          echo "WCOM_WEBHOOK_URL 类型: ${{ type(secrets.WCOM_WEBHOOK_URL) }}"
+          
+      - name: 检查两个密钥
+        run: |
+          echo "=== 检查两个密钥 ==="
+          if [ "${{ secrets.WECHAT_WEBHOOK_URL || secrets.WCOM_WEBHOOK_URL }}" != "" ]; then
+              echo "✅ 找到至少一个有效的Webhook URL"
+          else
+              echo "❌ 未找到有效的Webhook URL"
+          fi
