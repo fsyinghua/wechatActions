@@ -1,0 +1,48 @@
+name: Ultra Simple Debug Workflow
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  ultra-simple-debug:
+    runs-on: ubuntu-latest
+    name: Ultra Simple Debug
+    steps:
+      - name: 检查密钥是否存在
+        id: check-secrets
+        run: |
+          echo "=== 检查密钥是否存在 ==="
+          
+          # 检查WECHAT_WEBHOOK_URL
+          if [ "${{ secrets.WECHAT_WEBHOOK_URL }}" != "" ]; then
+              echo "✅ WECHAT_WEBHOOK_URL 存在"
+              echo "secret_exists=true" >> $GITHUB_OUTPUT
+              echo "webhook_url=${{ secrets.WECHAT_WEBHOOK_URL }}" >> $GITHUB_OUTPUT
+              echo "secret_name=WECHAT_WEBHOOK_URL" >> $GITHUB_OUTPUT
+          else
+              echo "❌ WECHAT_WEBHOOK_URL 不存在或为空"
+          fi
+          
+          # 检查WCOM_WEBHOOK_URL
+          if [ "${{ secrets.WCOM_WEBHOOK_URL }}" != "" ]; then
+              echo "✅ WCOM_WEBHOOK_URL 存在"
+              echo "secret_exists=true" >> $GITHUB_OUTPUT
+              echo "webhook_url=${{ secrets.WCOM_WEBHOOK_URL }}" >> $GITHUB_OUTPUT
+              echo "secret_name=WCOM_WEBHOOK_URL" >> $GITHUB_OUTPUT
+          else
+              echo "❌ WCOM_WEBHOOK_URL 不存在或为空"
+          fi
+
+      - name: 显示最终结果
+        run: |
+          echo "=== 最终结果 ==="
+          if [ "${{ steps.check-secrets.outputs.secret_exists }}" == "true" ]; then
+              echo "✅ 找到有效的Webhook URL"
+              echo "使用的密钥: ${{ steps.check-secrets.outputs.secret_name }}"
+              exit 0
+          else
+              echo "❌ 未找到有效的Webhook URL"
+              exit 1
+          fi
