@@ -1,0 +1,42 @@
+name: Simplest Check Workflow
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  simplest-check:
+    runs-on: ubuntu-latest
+    name: Simplest Check
+    steps:
+      - name: 输出基本信息
+        run: |
+          echo "=== 输出基本信息 ==="
+          echo "Hello from GitHub Actions!"
+          echo "当前时间: $(date)"
+          echo "当前目录: $(pwd)"
+          echo "当前用户: $(whoami)"
+      
+      - name: 检查是否能访问密钥
+        run: |
+          echo "=== 检查密钥访问 ==="
+          echo "尝试访问 WECHAT_WEBHOOK_URL..."
+          if [ "${{ secrets.WECHAT_WEBHOOK_URL }}" != "" ]; then
+              echo "✅ 可以访问 WECHAT_WEBHOOK_URL"
+          else
+              echo "❌ 无法访问 WECHAT_WEBHOOK_URL 或密钥不存在"
+          fi
+          
+          echo "尝试访问 WCOM_WEBHOOK_URL..."
+          if [ "${{ secrets.WCOM_WEBHOOK_URL }}" != "" ]; then
+              echo "✅ 可以访问 WCOM_WEBHOOK_URL"
+          else
+              echo "❌ 无法访问 WCOM_WEBHOOK_URL 或密钥不存在"
+          fi
+      
+      - name: 总结结果
+        run: |
+          echo "=== 总结结果 ==="
+          echo "工作流运行成功！"
+          echo "请查看上面的输出，了解密钥访问情况。"
