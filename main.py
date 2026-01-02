@@ -47,7 +47,8 @@ def send_wechat_message(webhook_url, message):
     print(f'::debug::[{session_id}] 开始执行 send_wechat_message 函数')
     print(f'::debug::[{session_id}] 上一级调用会话ID: {parent_session}')
     print(f'::debug::[{session_id}] 参数: webhook_url={webhook_url[:50]}...(已截断), message_type={message.get("msgtype")}')
-    print(f'::debug::[{session_id}] 消息内容摘要: {json.dumps(message, ensure_ascii=False)[:100]}...(已截断)')
+    # 使用ensure_ascii=True避免Windows环境下的编码问题
+    print(f'::debug::[{session_id}] 消息内容摘要: {json.dumps(message, ensure_ascii=True)[:100]}...(已截断)')
     
     success = False
     error_msg = None

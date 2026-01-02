@@ -5,7 +5,8 @@ author: 'fsyinghua'
 inputs:
   wechat_webhook_url:
     description: '企业微信机器人Webhook URL'
-    required: true
+    required: false
+    default: ''
   event_types:
     description: '需要通知的事件类型，逗号分隔（如：push,pull_request,issues,release）'
     required: false
