@@ -20,8 +20,8 @@
 2. 点击顶部的「Settings」标签
 3. 点击左侧菜单中的「Secrets and variables」→「Actions」
 4. 点击「New repository secret」
-5. 在「Name」字段中输入：`WECHAT_WEBHOOK_URL`
-6. 在「Secret」字段中粘贴你的企业微信机器人Webhook URL
+5. 在「Name」字段中输入：`WECHAT_WEBHOOK_URL`（推荐）或 `WCOM_WEBHOOK_URL`（兼容旧命名）
+6. 在「Secret」字段中粘贴您的企业微信机器人Webhook URL
 7. 点击「Add secret」
 
 ## 2. 配置工作流文件
