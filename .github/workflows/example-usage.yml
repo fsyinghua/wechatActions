@@ -24,9 +24,9 @@ jobs:
         with:
           fetch-depth: 1
       
-      # 步骤2：使用我们的企业微信通知Action
+      # 步骤2：使用当前仓库的企业微信通知Action
       - name: 发送通知到企业微信
-        uses: fsyinghua/wechatActions@v1
+        uses: ./
         with:
           # 使用GitHub Secrets存储敏感的Webhook URL
           wechat_webhook_url: ${{ secrets.WECHAT_WEBHOOK_URL }}
